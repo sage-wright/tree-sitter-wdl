@@ -127,15 +127,28 @@ module.exports = grammar({
       seq("command", "{", repeat(choice($.command_text_curly, $.placeholder)), "}"),
 
     command_block_heredoc: ($) =>
-      seq("command", "<<<", repeat(choice($.command_text_heredoc, $.placeholder)), ">>>"),
+      seq("command", "<<<", repeat(choice($.command_text_heredoc, alias($.heredoc_placeholder, $.placeholder))), ">>>"),
 
     command_text_curly: (_) =>
       token(prec(-1, /[^~$}]+|[~$][^{]|[~$]/)),
 
     command_text_heredoc: (_) =>
-      token(prec(-1, /[^~$><]+|[~$][^{]|[~$]|<[^<]|<<[^<]|>[^>]|>>[^>]/)),
+      token(prec(-1, /([^~><\\]|\\(.|\n))+|~[^{]|~|<[^<]|<<[^<]|>[^>]|>>[^>]/)),
 
-    placeholder: ($) => seq(choice("~{", "${"), $.expression, "}"),
+    placeholder: ($) =>
+      seq(choice("~{", "${"), repeat($.placeholder_option), $.expression, "}"),
+
+    heredoc_placeholder: ($) =>
+      seq("~{", repeat($.placeholder_option), $.expression, "}"),
+
+    // Deprecated (WDL 1.0/1.1) placeholder options: ~{sep=" " x}, ~{default="" x},
+    // ~{true="yes" false="no" b}
+    placeholder_option: ($) =>
+      seq(
+        field("name", choice($.identifier, "true", "false")),
+        "=",
+        field("value", $.string_literal),
+      ),
 
     runtime_block: ($) =>
       seq("runtime", "{", repeat($.runtime_attribute), "}"),
@@ -482,7 +495,7 @@ module.exports = grammar({
       token(prec(-1, /[^"\\~$]+|[~$][^{]|[~$]/)),
 
     string_placeholder: ($) =>
-      seq(choice("~{", "${"), $.expression, "}"),
+      seq(choice("~{", "${"), repeat($.placeholder_option), $.expression, "}"),
 
     escape_sequence: (_) =>
       token(

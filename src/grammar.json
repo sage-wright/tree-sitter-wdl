@@ -444,8 +444,13 @@
                 "name": "command_text_heredoc"
               },
               {
-                "type": "SYMBOL",
-                "name": "placeholder"
+                "type": "ALIAS",
+                "content": {
+                  "type": "SYMBOL",
+                  "name": "heredoc_placeholder"
+                },
+                "named": true,
+                "value": "placeholder"
               }
             ]
           }
@@ -474,7 +479,7 @@
         "value": -1,
         "content": {
           "type": "PATTERN",
-          "value": "[^~$><]+|[~$][^{]|[~$]|<[^<]|<<[^<]|>[^>]|>>[^>]"
+          "value": "([^~><\\\\]|\\\\(.|\\n))+|~[^{]|~|<[^<]|<<[^<]|>[^>]|>>[^>]"
         }
       }
     },
@@ -495,12 +500,81 @@
           ]
         },
         {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "placeholder_option"
+          }
+        },
+        {
           "type": "SYMBOL",
           "name": "expression"
         },
         {
           "type": "STRING",
           "value": "}"
+        }
+      ]
+    },
+    "heredoc_placeholder": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "STRING",
+          "value": "~{"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "placeholder_option"
+          }
+        },
+        {
+          "type": "SYMBOL",
+          "name": "expression"
+        },
+        {
+          "type": "STRING",
+          "value": "}"
+        }
+      ]
+    },
+    "placeholder_option": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "name",
+          "content": {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "identifier"
+              },
+              {
+                "type": "STRING",
+                "value": "true"
+              },
+              {
+                "type": "STRING",
+                "value": "false"
+              }
+            ]
+          }
+        },
+        {
+          "type": "STRING",
+          "value": "="
+        },
+        {
+          "type": "FIELD",
+          "name": "value",
+          "content": {
+            "type": "SYMBOL",
+            "name": "string_literal"
+          }
         }
       ]
     },
@@ -2332,6 +2406,13 @@
           ]
         },
         {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "placeholder_option"
+          }
+        },
+        {
           "type": "SYMBOL",
           "name": "expression"
         },
@@ -2696,6 +2777,5 @@
   "precedences": [],
   "externals": [],
   "inline": [],
-  "supertypes": [],
-  "reserved": {}
+  "supertypes": []
 }

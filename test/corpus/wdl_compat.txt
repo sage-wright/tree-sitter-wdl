@@ -1,0 +1,167 @@
+==========================================
+Placeholder options and bash expansions in heredoc commands
+==========================================
+
+version 1.0
+
+task t {
+  input {
+    Array[String] x
+    String? y
+    Boolean b
+  }
+  command <<<
+    tool ~{sep=" " x} ~{true="--yes" false="--no" b} ~{default="none" y}
+    echo ${y:-d} ${x%.gz} ${#arr[@]} $HOME
+    echo "\>>>"
+    echo ~{sep(" ", x)} ~{sep}
+  >>>
+  String s = "a ~{sep=',' x} b"
+}
+
+---
+
+(document
+  (version
+    (version_identifier))
+  (task
+    (identifier)
+    (input_block
+      (declaration
+        (type
+          (array_type
+            (type
+              (primitive_type))))
+        (identifier))
+      (declaration
+        (type
+          (primitive_type))
+        (identifier))
+      (declaration
+        (type
+          (primitive_type))
+        (identifier)))
+    (command_block
+      (command_block_heredoc
+        (command_text_heredoc)
+        (placeholder
+          (placeholder_option
+            (identifier)
+            (string_literal
+              (double_quoted_string)))
+          (expression
+            (primary_expression
+              (identifier))))
+        (placeholder
+          (placeholder_option
+            (string_literal
+              (double_quoted_string
+                (string_text_double))))
+          (placeholder_option
+            (string_literal
+              (double_quoted_string
+                (string_text_double))))
+          (expression
+            (primary_expression
+              (identifier))))
+        (placeholder
+          (placeholder_option
+            (identifier)
+            (string_literal
+              (double_quoted_string
+                (string_text_double))))
+          (expression
+            (primary_expression
+              (identifier))))
+        (command_text_heredoc)
+        (command_text_heredoc)
+        (command_text_heredoc)
+        (placeholder
+          (expression
+            (apply_expression
+              (identifier)
+              (expression
+                (primary_expression
+                  (string_literal
+                    (double_quoted_string))))
+              (expression
+                (primary_expression
+                  (identifier))))))
+        (placeholder
+          (expression
+            (primary_expression
+              (identifier))))))
+    (declaration
+      (type
+        (primitive_type))
+      (identifier)
+      (expression
+        (primary_expression
+          (string_literal
+            (double_quoted_string
+              (string_text_double)
+              (string_placeholder
+                (placeholder_option
+                  (identifier)
+                  (string_literal
+                    (single_quoted_string
+                      (string_text_single))))
+                (expression
+                  (primary_expression
+                    (identifier))))
+              (string_text_double))))))))
+
+==========================================
+Placeholder options in brace commands
+==========================================
+
+version 1.0
+
+task t {
+  input {
+    Array[String] x
+    String? y
+  }
+  command {
+    echo ${sep=" " x} ~{default="z" y}
+  }
+}
+
+---
+
+(document
+  (version
+    (version_identifier))
+  (task
+    (identifier)
+    (input_block
+      (declaration
+        (type
+          (array_type
+            (type
+              (primitive_type))))
+        (identifier))
+      (declaration
+        (type
+          (primitive_type))
+        (identifier)))
+    (command_block
+      (command_block_curly
+        (command_text_curly)
+        (placeholder
+          (placeholder_option
+            (identifier)
+            (string_literal
+              (double_quoted_string)))
+          (expression
+            (primary_expression
+              (identifier))))
+        (placeholder
+          (placeholder_option
+            (identifier)
+            (string_literal
+              (double_quoted_string
+                (string_text_double))))
+          (expression
+            (primary_expression
+              (identifier))))))))
