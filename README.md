@@ -8,6 +8,8 @@
   </p>
 </p>
 
+This is a fork of stjude-rust-labs/tree-sitter-wdl that adds support for WDL 1.0 placeholder options (~{sep=...}, ~{default=...}, ~{true=... false=...}) and treats bash ${...} and \>>> as plain text in <<< >>> command blocks.
+
 ## Overview
 
 This grammar supports WDL versions 1.0 through 1.3, including `enum`
